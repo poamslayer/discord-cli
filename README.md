@@ -13,10 +13,10 @@ Pick one of the two ways.
 This works on macOS and Linux and does not need Go. It downloads the binary for your machine from the latest GitHub release, checks it against the release's checksums, and puts it in `~/.local/bin`.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/arnoldadlv/discord-cli/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/poamslayer/discord-cli/main/install.sh | bash
 ```
 
-If `~/.local/bin` is not on your `PATH`, the script prints the line to add. Set `DISCORD_INSTALL_DIR` to install somewhere else, or `DISCORD_VERSION=v0.1.0` to pin a release. Windows binaries are on the [releases page](https://github.com/arnoldadlv/discord-cli/releases).
+If `~/.local/bin` is not on your `PATH`, the script prints the line to add. Set `DISCORD_INSTALL_DIR` to install somewhere else, or `DISCORD_VERSION=v0.1.0` to pin a release. Windows binaries are on the [releases page](https://github.com/poamslayer/discord-cli/releases).
 
 ### With Go
 
@@ -27,6 +27,8 @@ You need Go 1.25 or newer. No C compiler is needed.
    ```sh
    go install github.com/arnoldadlv/discord-cli/cmd/discord@latest
    ```
+
+   The module path is still `github.com/arnoldadlv/discord-cli`, the repository's name before it moved to `poamslayer`. GitHub redirects the old name, so the command works as written. Using `poamslayer` in it fails, because Go checks the path against `go.mod`.
 
    The binary is named `discord`. Go puts it in `$(go env GOPATH)/bin`, which is usually `~/go/bin`.
 
@@ -199,6 +201,8 @@ discord message read 1542961568172740660 --context 5
 ```
 
 The id is looked up in the search index first, so a message that is already in an export is read from disk without asking Discord. If no export holds it, name the channel with `--channel` and it is fetched instead.
+
+`message read` and `export search` say on stderr where the answer came from: an export on disk, and how far that export reaches, or Discord itself. An answer from an export can miss newer messages, and `guild search` asks Discord instead. With `--json`, the `source` field says the same thing as `export` or `discord`.
 
 Look after the search index and the lookup cache:
 
