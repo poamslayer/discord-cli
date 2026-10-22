@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 // compactLines splits compact output into its records, dropping the final

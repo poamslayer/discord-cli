@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 func dmRunner(t *testing.T) *clitest.Runner {

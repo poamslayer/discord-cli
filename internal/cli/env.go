@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/discord"
 )
 
 // Env is everything the tool touches outside its own process, so tests can

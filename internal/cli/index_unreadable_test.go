@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 // A DiscordChatExporter run that was interrupted leaves a file cut off in

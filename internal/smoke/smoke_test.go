@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/cli"
-	"github.com/arnoldadlv/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/cli"
+	"github.com/poamslayer/discord-cli/internal/discord"
 )
 
 func TestLiveSmoke(t *testing.T) {

@@ -25,10 +25,8 @@ You need Go 1.25 or newer. No C compiler is needed.
 1. Install the binary:
 
    ```sh
-   go install github.com/arnoldadlv/discord-cli/cmd/discord@latest
+   go install github.com/poamslayer/discord-cli/cmd/discord@latest
    ```
-
-   The module path is still `github.com/arnoldadlv/discord-cli`, the repository's name before it moved to `poamslayer`. GitHub redirects the old name, so the command works as written. Using `poamslayer` in it fails, because Go checks the path against `go.mod`.
 
    The binary is named `discord`. Go puts it in `$(go env GOPATH)/bin`, which is usually `~/go/bin`.
 
@@ -61,13 +59,13 @@ This prints the version, the Go version it was built with, and the commit.
 Run the same install line again. The script replaces the binary with the latest release. With Go:
 
 ```sh
-go install github.com/arnoldadlv/discord-cli/cmd/discord@latest
+go install github.com/poamslayer/discord-cli/cmd/discord@latest
 ```
 
 The Go module proxy caches "latest" for a few minutes. If you want a commit that was merged moments ago, skip the proxy and name the branch:
 
 ```sh
-GOPROXY=direct go install github.com/arnoldadlv/discord-cli/cmd/discord@main
+GOPROXY=direct go install github.com/poamslayer/discord-cli/cmd/discord@main
 ```
 
 After an upgrade, re-install the agent skill if you use it (see Agent skill).

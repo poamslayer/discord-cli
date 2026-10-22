@@ -8,9 +8,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
-	"github.com/arnoldadlv/discord-cli/internal/resolve"
-	"github.com/arnoldadlv/discord-cli/internal/store"
+	"github.com/poamslayer/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/resolve"
+	"github.com/poamslayer/discord-cli/internal/store"
 )
 
 func (a *app) lookupCache() store.LookupCache {

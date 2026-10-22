@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 // guildExportRunner serves messages for every message channel of the

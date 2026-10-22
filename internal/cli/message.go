@@ -5,11 +5,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
-	"github.com/arnoldadlv/discord-cli/internal/export"
-	"github.com/arnoldadlv/discord-cli/internal/resolve"
-	"github.com/arnoldadlv/discord-cli/internal/search"
-	"github.com/arnoldadlv/discord-cli/internal/term"
+	"github.com/poamslayer/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/export"
+	"github.com/poamslayer/discord-cli/internal/resolve"
+	"github.com/poamslayer/discord-cli/internal/search"
+	"github.com/poamslayer/discord-cli/internal/term"
 )
 
 // messageReadJSON is the JSON document a message read emits: the compact

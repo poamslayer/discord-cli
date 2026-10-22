@@ -10,7 +10,7 @@ import (
 
 	_ "modernc.org/sqlite" // pure-Go driver, no C compiler needed
 
-	"github.com/arnoldadlv/discord-cli/internal/export"
+	"github.com/poamslayer/discord-cli/internal/export"
 )
 
 // Index is the disposable SQLite full-text index over the exports. The

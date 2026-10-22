@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 func TestDMExportFreshAndGolden(t *testing.T) {

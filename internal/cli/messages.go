@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
-	"github.com/arnoldadlv/discord-cli/internal/export"
+	"github.com/poamslayer/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/export"
 )
 
 // namedJSON is a resolved guild or channel in JSON output.

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/arnoldadlv/discord-cli/internal/export"
+	"github.com/poamslayer/discord-cli/internal/export"
 )
 
 // Location is where one message lives: the export file holding it, and the

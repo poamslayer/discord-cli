@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/export"
+	"github.com/poamslayer/discord-cli/internal/export"
 )
 
 // Result is one matching message, normalised across both export dialects.

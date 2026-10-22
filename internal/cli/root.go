@@ -14,14 +14,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
-	"github.com/arnoldadlv/discord-cli/internal/export"
-	"github.com/arnoldadlv/discord-cli/internal/store"
-	"github.com/arnoldadlv/discord-cli/internal/term"
+	"github.com/poamslayer/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/export"
+	"github.com/poamslayer/discord-cli/internal/store"
+	"github.com/poamslayer/discord-cli/internal/term"
 )
 
 // RepoURL is where problems are reported.
-const RepoURL = "https://github.com/arnoldadlv/discord-cli"
+const RepoURL = "https://github.com/poamslayer/discord-cli"
 
 // skillMarkdown is the agent skill shipped inside the binary, printed by
 // `discord help --skill` so it always matches the installed version.

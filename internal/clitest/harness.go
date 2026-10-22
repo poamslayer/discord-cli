@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/cli"
+	"github.com/poamslayer/discord-cli/internal/cli"
 )
 
 // Result is what a user or agent can observe after one command run.

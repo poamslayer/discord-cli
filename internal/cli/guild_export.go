@@ -8,9 +8,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
-	"github.com/arnoldadlv/discord-cli/internal/export"
-	"github.com/arnoldadlv/discord-cli/internal/term"
+	"github.com/poamslayer/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/export"
+	"github.com/poamslayer/discord-cli/internal/term"
 )
 
 // exportSummaryJSON is the JSON for a guild (or DM directory) export run.

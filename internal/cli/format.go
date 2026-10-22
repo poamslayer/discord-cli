@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
-	"github.com/arnoldadlv/discord-cli/internal/term"
+	"github.com/poamslayer/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/term"
 )
 
 // The four values --format accepts. json is an alias of the older --json
