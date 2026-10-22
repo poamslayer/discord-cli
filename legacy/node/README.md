@@ -1,11 +1,11 @@
 # Legacy Node.js discord-cli (v1.0.0)
 
 **Deprecated.** The Go tool at the root of this repository replaces it:
-`go install github.com/arnoldadlv/discord-cli/cmd/discord@latest`. The npm
+`go install github.com/poamslayer/discord-cli/cmd/discord@latest`. The npm
 package is to be marked deprecated with this command, run by the maintainer
 once logged in to npm:
 
-    npm deprecate @poamslayer/discord-cli@1.0.0 "Replaced by the Go tool: go install github.com/arnoldadlv/discord-cli/cmd/discord@latest"
+    npm deprecate @poamslayer/discord-cli@1.0.0 "Replaced by the Go tool: go install github.com/poamslayer/discord-cli/cmd/discord@latest"
 
 This is the original zero-dependency Node.js CLI, recovered from the published
 npm package `@poamslayer/discord-cli@1.0.0` on 2026-09-03 after the source was

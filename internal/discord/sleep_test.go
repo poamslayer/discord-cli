@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/discord"
 )
 
 // A rate-limit wait must end as soon as the run is interrupted.

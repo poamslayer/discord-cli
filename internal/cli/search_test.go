@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 func searchRunner(t *testing.T, n int) *clitest.Runner {

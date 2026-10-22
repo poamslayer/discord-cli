@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/arnoldadlv/discord-cli/internal/cli"
+	"github.com/poamslayer/discord-cli/internal/cli"
 )
 
 // version is set with -ldflags "-X main.version=..." for releases.

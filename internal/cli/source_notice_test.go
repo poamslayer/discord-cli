@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 // wantExportNotice is the note 'message read' prints on stderr when a

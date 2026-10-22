@@ -14,7 +14,7 @@ description: >
 
 # discord-cli
 
-`discord` reads the user's own Discord account: guilds, channels, threads, DMs, live search, exports to JSON, and fast local search over those exports. It uses the account's own user token, never a bot. Source and README: https://github.com/arnoldadlv/discord-cli
+`discord` reads the user's own Discord account: guilds, channels, threads, DMs, live search, exports to JSON, and fast local search over those exports. It uses the account's own user token, never a bot. Source and README: https://github.com/poamslayer/discord-cli
 
 This file matches the installed version. Re-install it after upgrading: `discord help --skill > ~/.claude/skills/discord-cli/SKILL.md`.
 

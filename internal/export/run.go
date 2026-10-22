@@ -8,7 +8,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/discord"
 )
 
 // Status of one channel export.

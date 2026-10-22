@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install discord-cli from the GitHub release binaries.
 #
-#   curl -fsSL https://raw.githubusercontent.com/arnoldadlv/discord-cli/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/poamslayer/discord-cli/main/install.sh | bash
 #
 # Environment:
 #   DISCORD_VERSION       release tag to install (default: the latest release)
@@ -11,7 +11,7 @@
 # verified against the release's checksums.txt before it is installed.
 set -euo pipefail
 
-REPO="arnoldadlv/discord-cli"
+REPO="poamslayer/discord-cli"
 BASE="${DISCORD_RELEASE_BASE:-https://github.com/${REPO}/releases}"
 VERSION="${DISCORD_VERSION:-}"
 INSTALL_DIR="${DISCORD_INSTALL_DIR:-$HOME/.local/bin}"

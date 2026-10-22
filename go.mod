@@ -1,4 +1,4 @@
-module github.com/arnoldadlv/discord-cli
+module github.com/poamslayer/discord-cli
 
 go 1.25.3
 

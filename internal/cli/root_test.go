@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 func TestBareCommandPrintsConciseHelp(t *testing.T) {
@@ -13,7 +13,7 @@ func TestBareCommandPrintsConciseHelp(t *testing.T) {
 	if res.ExitCode != 0 {
 		t.Fatalf("exit %d, stderr: %s", res.ExitCode, res.Stderr)
 	}
-	for _, want := range []string{"Usage:", "discord guild", "--help", "Examples:", "github.com/arnoldadlv/discord-cli"} {
+	for _, want := range []string{"Usage:", "discord guild", "--help", "Examples:", "github.com/poamslayer/discord-cli"} {
 		if !strings.Contains(res.Stdout, want) {
 			t.Errorf("stdout missing %q:\n%s", want, res.Stdout)
 		}

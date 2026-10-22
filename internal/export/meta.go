@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/store"
+	"github.com/poamslayer/discord-cli/internal/store"
 )
 
 // MetaFile is the name of the per-directory export meta.

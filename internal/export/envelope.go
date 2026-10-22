@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/arnoldadlv/discord-cli/internal/store"
+	"github.com/poamslayer/discord-cli/internal/store"
 )
 
 // Dialect says who wrote an export.

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/arnoldadlv/discord-cli/internal/resolve"
+	"github.com/poamslayer/discord-cli/internal/resolve"
 )
 
 // Walk lists every export header under the read locations, in location

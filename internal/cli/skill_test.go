@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/arnoldadlv/discord-cli/internal/clitest"
+	"github.com/poamslayer/discord-cli/internal/clitest"
 )
 
 func TestHelpSkillPrintsEmbeddedSkill(t *testing.T) {

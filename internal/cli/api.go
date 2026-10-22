@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
-	"github.com/arnoldadlv/discord-cli/internal/store"
+	"github.com/poamslayer/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/store"
 )
 
 // paths resolves the run's directories from the environment.

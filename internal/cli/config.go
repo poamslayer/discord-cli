@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/arnoldadlv/discord-cli/internal/store"
-	"github.com/arnoldadlv/discord-cli/internal/term"
+	"github.com/poamslayer/discord-cli/internal/store"
+	"github.com/poamslayer/discord-cli/internal/term"
 )
 
 func (a *app) configCommands() []*cobra.Command {

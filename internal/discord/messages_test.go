@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arnoldadlv/discord-cli/internal/discord"
+	"github.com/poamslayer/discord-cli/internal/discord"
 )
 
 // aroundServer answers the token check and records every messages request.

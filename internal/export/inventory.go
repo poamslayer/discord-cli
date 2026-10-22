@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/arnoldadlv/discord-cli/internal/resolve"
+	"github.com/poamslayer/discord-cli/internal/resolve"
 )
 
 // Location labels for the three read locations, in precedence order: the
