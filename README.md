@@ -167,6 +167,7 @@ Live search through Discord:
 discord guild search "access control"
 discord guild search MFA --channel general --limit 50
 discord guild search --query "policy" --has link --json
+discord guild search --after 2026-09-01 --before 2026-10-01 --limit 1 --json   # total_results counts the month
 ```
 
 Discord has no search for DMs, so `dm search` fetches the DM's history and filters it. For repeated research, export the DM once and run a local search over the export:

@@ -148,3 +148,40 @@ func TestGuildSearchUnknownChannelExits4(t *testing.T) {
 		t.Errorf("exit %d: %s", res.ExitCode, res.Stderr)
 	}
 }
+
+func TestGuildSearchDateBounds(t *testing.T) {
+	r := searchRunner(t, 5)
+	res := r.Run("guild", "search", "--after", "2026-09-01T00:00:00Z", "--before", "2026-10-01T00:00:00Z", "--limit", "1", "--json")
+	if res.ExitCode != 0 {
+		t.Fatalf("exit %d: %s", res.ExitCode, res.Stderr)
+	}
+	reqs := r.Fake.RequestsTo("/guilds/1001/messages/search")
+	if len(reqs) != 1 {
+		t.Fatalf("requests %d", len(reqs))
+	}
+	q := reqs[0].Query
+	// (ms since 2015-01-01) << 22 for each bound.
+	if q.Get("min_id") != "1544134695321600000" || q.Get("max_id") != "1555006331289600000" || q.Has("content") {
+		t.Errorf("query %v", q)
+	}
+	var j struct {
+		TotalResults int `json:"total_results"`
+	}
+	res.JSON(t, &j)
+	if j.TotalResults != 5 {
+		t.Errorf("total %d", j.TotalResults)
+	}
+}
+
+func TestGuildSearchDateBoundsRejected(t *testing.T) {
+	r := searchRunner(t, 5)
+	for _, args := range [][]string{
+		{"guild", "search", "--after", "2026-10-01", "--before", "2026-09-01"},
+		{"guild", "search", "--after", "last tuesday"},
+		{"guild", "search"},
+	} {
+		if res := r.Run(args...); res.ExitCode != 2 {
+			t.Errorf("%v: exit %d, want 2", args, res.ExitCode)
+		}
+	}
+}
