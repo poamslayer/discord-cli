@@ -24,7 +24,13 @@ const (
 func (a *app) resolveFormat() error {
 	raw := strings.ToLower(strings.TrimSpace(a.flags.FormatFlag))
 	if raw == "" {
-		// --json with no --format is the same as --format=json.
+		// --json with no --format is the same as --format=json. An agent
+		// that asked for nothing gets the lean formats: compact for message
+		// commands, tsv for list commands; every other command reads
+		// neither and prints its usual output.
+		if !a.flags.JSON && isAgent(a.env.Getenv) {
+			a.flags.Agent, a.flags.Compact, a.flags.TSV = true, true, true
+		}
 		return nil
 	}
 	switch raw {
@@ -62,6 +68,7 @@ type compactRow struct {
 	Timestamp   string // the raw timestamp, as Discord or an export stored it
 	Author      string
 	Content     string
+	Full        bool // print the content whole, whatever --width says
 }
 
 // writeCompact prints one line per row. The timestamp is normalised to UTC
@@ -73,7 +80,7 @@ func (a *app) writeCompact(rows []compactRow) {
 	w := a.stdout()
 	for _, r := range rows {
 		content := flattenContent(r.Content)
-		if a.flags.Width > 0 {
+		if a.flags.Width > 0 && !r.Full {
 			content = discord.Truncate(content, a.flags.Width)
 		}
 		fmt.Fprintf(w, "%s/%s:%s:%s:%s: %s\n", r.GuildSlug, r.ChannelSlug, r.ID, compactTimestamp(r.Timestamp), r.Author, content)

@@ -87,7 +87,7 @@ func (a *app) guildSearch(cmd *cobra.Command, guildFlag, query, channel, has str
 	if err != nil {
 		return err
 	}
-	opts := discord.SearchOptions{Content: query, Has: has, Limit: limit, Offset: offset}
+	opts := discord.SearchOptions{Content: query, Has: has, Limit: a.searchLimit(cmd, limit), Offset: offset}
 	if channel != "" {
 		ch, err := a.resolveChannel(ctx, g.ID, channel, false)
 		if err != nil {
@@ -127,6 +127,7 @@ func (a *app) guildSearch(cmd *cobra.Command, guildFlag, query, channel, has str
 			rows[i] = compactRow{GuildSlug: gslug, ChannelSlug: cslug, ID: m.ID, Timestamp: m.Timestamp, Author: m.Author.DisplayName(), Content: m.Content}
 		}
 		a.writeCompact(rows)
+		a.agentHint(len(res.Messages), res.TotalResults, fmt.Sprintf("discord message read <id> --guild %s --channel <channel> --context 5", gslug))
 		return nil
 	}
 	if len(res.Messages) == 0 {

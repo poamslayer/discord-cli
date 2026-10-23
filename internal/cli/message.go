@@ -239,7 +239,9 @@ func (a *app) writeMessageRead(out messageReadJSON, ms []discord.Message, id str
 		}
 		rows := make([]compactRow, len(ms))
 		for i, m := range ms {
-			rows[i] = compactRow{GuildSlug: gslug, ChannelSlug: cslug, ID: m.ID, Timestamp: m.Timestamp, Author: m.Author.DisplayName(), Content: m.Content}
+			// An agent opens a message to read it, so the one it asked for
+			// is never cut; the context around it stays at --width.
+			rows[i] = compactRow{GuildSlug: gslug, ChannelSlug: cslug, ID: m.ID, Timestamp: m.Timestamp, Author: m.Author.DisplayName(), Content: m.Content, Full: a.flags.Agent && m.ID == id}
 		}
 		a.writeCompact(rows)
 		return nil

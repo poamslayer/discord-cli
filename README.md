@@ -1,6 +1,6 @@
 # discord-cli
 
-A command-line tool that reads your own Discord account: the guilds you belong to, the channels and DMs you can see, and the messages in them. You can run a live search through Discord, export channels and DMs to JSON files, and run a local search over those files on your own machine without limits. It works for a person at the keyboard and for an agent that calls it with `--json`.
+A command-line tool that reads your own Discord account: the guilds you belong to, the channels and DMs you can see, and the messages in them. You can run a live search through Discord, export channels and DMs to JSON files, and run a local search over those files on your own machine without limits. It works for a person at the keyboard and for an agent, which gets short output by default.
 
 It talks to Discord as your own account, with your user token. It never uses a bot token.
 
@@ -138,6 +138,8 @@ If the index is missing or out of date, local search still works by scanning the
 ## A tour of the commands
 
 Commands are noun then verb. Every command accepts `--format`: `human` (the default), `json` (the same as `--json`), `compact` (one message per line, for `channel read`, `dm read`, `export search`, `guild search`, and `message read`), or `tsv` (for `guild list`, `channel list`, `dm list`, `export list`, and `cache status`, with a header row `--no-header` removes). Compact content is truncated at `--width` characters, 200 by default, 0 to turn that off. Progress and errors always go to stderr, so stdout is only ever the answer.
+
+When a coding agent runs the tool (Claude Code, Cursor, Codex, Gemini CLI, OpenCode, or anything that sets `AI_AGENT`) and passes no format, message commands print compact, list commands print tsv, searches return 10 hits, and a line on stderr says how many matched and how to open one with `message read`. `--json` and `--format` work as before. `DISCORD_AGENT=0` turns this off and `DISCORD_AGENT=1` turns it on. ADR-0007 says why.
 
 See what you have access to:
 
