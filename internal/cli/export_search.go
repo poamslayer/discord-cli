@@ -59,7 +59,7 @@ required. Results are newest first across every export and dialect.`,
   discord export search --query MFA --guild dm --json`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			q, err := queryArg(args, query)
+			q, err := queryArg(args, query, false)
 			if err != nil {
 				return err
 			}

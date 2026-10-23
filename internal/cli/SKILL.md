@@ -39,6 +39,7 @@ discord config get                          # default-guild; set it with: config
 discord guild list
 discord guild show --guild my-guild         # counts and export status per channel
 discord guild search budget --has link --limit 25
+discord guild search --after 2026-09-01 --before 2026-10-01 --limit 1 --json  # total_results = messages that month, none fetched
 discord guild export --threads              # incremental; --full refetches
 discord channel list --threads
 discord channel read general --limit 20

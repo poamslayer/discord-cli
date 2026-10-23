@@ -155,7 +155,7 @@ query term appears in it. For repeated research, export the DM once with
   discord dm search kyle meeting --after 2026-01-01 --json`,
 		Args: cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			q, err := queryArg(args[1:], query)
+			q, err := queryArg(args[1:], query, false)
 			if err != nil {
 				return err
 			}

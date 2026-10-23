@@ -4,7 +4,22 @@ import (
 	"context"
 	"net/url"
 	"strconv"
+	"time"
 )
+
+// discordEpoch is the first instant of 2015 in Unix milliseconds, the zero
+// point of Discord snowflake ids.
+const discordEpoch = 1420070400000
+
+// SnowflakeAt returns the smallest snowflake id minted at t, for use as a
+// before/after or min_id/max_id bound.
+func SnowflakeAt(t time.Time) string {
+	ms := t.UnixMilli() - discordEpoch
+	if ms < 0 {
+		ms = 0
+	}
+	return strconv.FormatUint(uint64(ms)<<22, 10)
+}
 
 // SearchPage is the most results one search request returns.
 const SearchPage = 25
@@ -14,6 +29,8 @@ type SearchOptions struct {
 	Content   string
 	ChannelID string
 	Has       string
+	MinID     string // only messages after this snowflake
+	MaxID     string // only messages before this snowflake
 	Offset    int
 	Limit     int // total wanted; pages are fetched until satisfied
 }
@@ -62,6 +79,12 @@ func (c *Client) Search(ctx context.Context, guildID string, o SearchOptions) (*
 		}
 		if o.Has != "" {
 			q.Set("has", o.Has)
+		}
+		if o.MinID != "" {
+			q.Set("min_id", o.MinID)
+		}
+		if o.MaxID != "" {
+			q.Set("max_id", o.MaxID)
 		}
 		var page searchResponse
 		if err := c.Get(ctx, "/guilds/"+guildID+"/messages/search", q, &page); err != nil {

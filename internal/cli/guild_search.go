@@ -23,7 +23,9 @@ type searchJSON struct {
 }
 
 // queryArg merges the positional query and --query, which are aliases.
-func queryArg(args []string, flag string) (string, error) {
+// With optional set, another flag narrows the search and the query may be
+// left out.
+func queryArg(args []string, flag string, optional bool) (string, error) {
 	pos := ""
 	if len(args) > 0 {
 		pos = args[0]
@@ -35,49 +37,68 @@ func queryArg(args []string, flag string) (string, error) {
 		return pos, nil
 	case flag != "":
 		return flag, nil
+	case optional:
+		return "", nil
 	}
-	return "", UsageError("missing the query").WithHint("Usage: discord guild search <query> [flags], or --query <text>.")
+	return "", UsageError("missing the query").WithHint("Usage: discord guild search <query> [flags], or --query <text>. The query may be left out when --after, --before, --channel or --has narrows the search.")
 }
 
 func (a *app) guildSearchCommand() *cobra.Command {
 	var (
 		guild, query, channel, has string
+		after, before              string
 		limit, offset              int
 	)
 	cmd := &cobra.Command{
 		Use:   "search [<query>]",
 		Short: "Search a guild's messages through Discord's own search",
 		Long: `Search a guild's messages through Discord's search endpoint, newest first.
-The query may be given as the argument or as --query. Limits above 25 are
-satisfied by fetching further pages for you.`,
+The query may be given as the argument or as --query, and left out when
+--after, --before, --channel or --has narrows the search. Limits above 25 are
+satisfied by fetching further pages for you. total_results counts every
+match, so --limit 1 --json counts messages without fetching them.`,
 		Example: `  discord guild search "access control"
   discord guild search MFA --channel general --limit 50
-  discord guild search --query "policy" --has link --json`,
+  discord guild search --query "policy" --has link --json
+  discord guild search --after 2026-09-01 --before 2026-10-01 --limit 1 --json`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			q, err := queryArg(args, query)
+			q, err := queryArg(args, query, after != "" || before != "" || channel != "" || has != "")
 			if err != nil {
 				return err
 			}
-			return a.guildSearch(cmd, guild, q, channel, has, limit, offset)
+			return a.guildSearch(cmd, guild, q, channel, has, after, before, limit, offset)
 		},
 	}
 	addGuildFlag(cmd, &guild)
 	cmd.Flags().StringVarP(&query, "query", "q", "", "text to search for (alias of the argument)")
 	cmd.Flags().StringVar(&channel, "channel", "", "narrow to one channel, by name or id")
 	cmd.Flags().StringVar(&has, "has", "", "only messages that have one of: "+hasValues)
+	cmd.Flags().StringVar(&after, "after", "", "only messages after this date (YYYY-MM-DD or RFC 3339)")
+	cmd.Flags().StringVar(&before, "before", "", "only messages before this date (YYYY-MM-DD or RFC 3339)")
 	cmd.Flags().IntVarP(&limit, "limit", "n", 25, "number of results to show")
 	cmd.Flags().IntVar(&offset, "offset", 0, "skip this many results")
 	return cmd
 }
 
-func (a *app) guildSearch(cmd *cobra.Command, guildFlag, query, channel, has string, limit, offset int) error {
+func (a *app) guildSearch(cmd *cobra.Command, guildFlag, query, channel, has, afterFlag, beforeFlag string, limit, offset int) error {
 	ctx := cmd.Context()
 	if limit <= 0 {
 		return UsageError("--limit must be at least 1")
 	}
 	if offset < 0 {
 		return UsageError("--offset cannot be negative")
+	}
+	after, err := parseDate("after", afterFlag)
+	if err != nil {
+		return err
+	}
+	before, err := parseDate("before", beforeFlag)
+	if err != nil {
+		return err
+	}
+	if !after.IsZero() && !before.IsZero() && !after.Before(before) {
+		return UsageError("--after must be earlier than --before")
 	}
 	input, err := a.guildArg(guildFlag)
 	if err != nil {
@@ -88,6 +109,12 @@ func (a *app) guildSearch(cmd *cobra.Command, guildFlag, query, channel, has str
 		return err
 	}
 	opts := discord.SearchOptions{Content: query, Has: has, Limit: a.searchLimit(cmd, limit), Offset: offset}
+	if !after.IsZero() {
+		opts.MinID = discord.SnowflakeAt(after)
+	}
+	if !before.IsZero() {
+		opts.MaxID = discord.SnowflakeAt(before)
+	}
 	if channel != "" {
 		ch, err := a.resolveChannel(ctx, g.ID, channel, false)
 		if err != nil {
