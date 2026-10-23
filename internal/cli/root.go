@@ -35,6 +35,7 @@ type globalFlags struct {
 	FormatFlag string // raw --format value, before validation against --json
 	Compact    bool   // resolved: --format=compact
 	TSV        bool   // resolved: --format=tsv
+	Agent      bool   // resolved: an agent runs the tool and chose no format
 	Width      int    // --width: compact content truncation, 0 disables it
 	NoHeader   bool   // --no-header: suppress the tsv header row
 	NoCache    bool

@@ -109,6 +109,7 @@ func (a *app) exportSearch(cmd *cobra.Command, query, guild string, all bool, au
 	if err != nil {
 		return err
 	}
+	limit = a.searchLimit(cmd, limit)
 	shown := results
 	if len(shown) > limit {
 		shown = shown[:limit]
@@ -127,6 +128,7 @@ func (a *app) exportSearch(cmd *cobra.Command, query, guild string, all bool, au
 			rows[i] = compactRow{GuildSlug: resolve.Key(r.GuildName), ChannelSlug: resolve.Key(r.ChannelName), ID: r.MessageID, Timestamp: r.Timestamp, Author: r.Author, Content: r.Content}
 		}
 		a.writeCompact(rows)
+		a.agentHint(len(shown), len(results), "discord message read <id> --context 5")
 		return nil
 	}
 	w := a.stdout()

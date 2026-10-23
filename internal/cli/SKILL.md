@@ -14,191 +14,53 @@ description: >
 
 # discord-cli
 
-`discord` reads the user's own Discord account: guilds, channels, threads, DMs, live search, exports to JSON, and fast local search over those exports. It uses the account's own user token, never a bot. Source and README: https://github.com/poamslayer/discord-cli
+`discord` reads the user's own Discord account with its own user token: guilds, channels, threads, DMs, live search, exports to JSON, and fast local search over those exports. Commands are `discord <noun> <verb> [argument] [flags]`; `--help` works anywhere. Source: https://github.com/poamslayer/discord-cli. After upgrading, re-install this file: `discord help --skill > ~/.claude/skills/discord-cli/SKILL.md`.
 
-This file matches the installed version. Re-install it after upgrading: `discord help --skill > ~/.claude/skills/discord-cli/SKILL.md`.
+## Output for agents
 
-## Pre-flight
+The tool detects an agent (`CLAUDECODE=1` and similar) and, when no format is given, prints lean output: one line per message for message commands (`guild-slug/channel-slug:message-id:timestamp:author: content`, content cut at `--width`, 200 by default), tsv for list commands, and at most 10 search hits. A line on stderr says how many hits there were and how to open one. Do not pass `--json` to read results; pass it only when a script parses the output or you need attachments, embeds, or reactions (with `--context`, the message asked for carries `"match": true`). `--format` (`human`, `json`, `compact`, `tsv`) overrides the default; `DISCORD_AGENT=0` turns it off.
 
-Before a long task, and whenever a command exits 3, check the token:
-
-```bash
-discord auth status --json
-```
-
-Exit 0 with `"valid": true` means Discord accepts the token. Exit 3 means there is no token or Discord rejected it. Stop and ask the user to run `discord auth set` (it prompts with echo off); do not try to obtain or store a token yourself.
-
-Find the default guild with `discord config get --json`. If `default-guild` is empty, either pass `--guild <name>` on guild-scoped commands or ask the user which guild to set with `discord config set default-guild <name>`.
-
-## Syntax
+Search, then read. A search hit is an address; `message read` opens it, printing the message whole and the context around it:
 
 ```bash
-discord <noun> <verb> [argument] [flags]
+discord export search "onboarding" --guild my-guild
+discord message read <id from a search hit> --context 5
+discord guild search "onboarding" --channel general
+discord message read <id from a search hit> --guild my-guild --channel general
 ```
 
-Nouns: `guild`, `channel`, `dm`, `message`, `export`, `auth`, `config`, `cache`. Each command takes at most one positional argument (a channel or DM name, or a search query). Flags work in any order. `--help` works anywhere. Abbreviated command names are not accepted.
-
-**Always pass `--json`.** Every command supports it, its field names are stable, and human output may change. Progress, notices, and errors go to stderr; stdout is only ever the answer.
-
-### Exit codes
-
-Branch on the code, not on error text.
-
-| Code | Meaning | What to do |
-|---|---|---|
-| 0 | Success | Parse stdout |
-| 1 | Unexpected error (network, timeout, a failed channel inside a guild export) | Read stderr; retry once for a timeout |
-| 2 | Usage error (bad flag, missing argument, no guild and no default guild) | Fix the command; for "no guild" add `--guild <name>` |
-| 3 | Authentication failed (no token, rejected token, bot token) | Stop and ask the user to run `discord auth set` |
-| 4 | Guild, channel, DM, or message not found, or not visible to the account | stderr carries "Did you mean: ..."; pick one and retry. For a message id in no export, add `--channel` |
-| 5 | No exports on disk | Run an export first |
-| 6 | Rate limit exhausted | Wait a minute; lower `--concurrency` for exports |
-
-### Names
-
-Guilds, channels, and DMs are given by name or numeric id. Matching is case-insensitive, then normalised (spaces to hyphens, emoji and punctuation dropped), so `my-guild` finds `My Guild` and `news` finds `📰news`. No match exits 4 with up to five suggestions; several matches exit 4 listing the candidates, so use the id.
-
-DMs are named by the other person's username or display name; group DMs by their name or any participant.
+Compact also suits counting, grouping, and scanning a distribution: `discord export search "mfa" --all --limit 500 | cut -d: -f1 | sort | uniq -c`.
 
 ## Commands
 
-| Command | Purpose | Key flags |
-|---|---|---|
-| `guild list` | Guilds the account belongs to | |
-| `guild show` | One guild: counts and export status per channel | `--guild` |
-| `guild search <query>` | Live search through Discord's search | `--guild`, `--channel`, `--has`, `--limit`, `--offset` |
-| `guild export` | Export every text, announcement, and forum channel | `--guild`, `--threads`, `--full`, `--concurrency` |
-| `channel list` | Channels grouped by category | `--guild`, `--threads` |
-| `channel read <channel>` | Newest messages, oldest first, with embeds and reactions | `--guild`, `--limit`, `--threads` |
-| `channel export <channel>` | Export one channel (and its threads with `--threads`) | `--guild`, `--full`, `--threads` |
-| `dm list` | DMs and group DMs with participants | |
-| `dm read <dm>` | Recent messages of a DM | `--limit` |
-| `dm search <dm> --query <text>` | Search one DM by fetching its history | `--query`, `--after`, `--before`, `--limit` |
-| `dm export <dm>` | Export a DM | `--full` |
-| `message read <id>` | One message by id, with the messages around it | `--context`, `--channel`, `--guild` |
-| `export list` | Every export on disk, all locations | `--guild` |
-| `export search <query>` | Search exports on disk, unlimited | `--guild` or `--all`, `--author`, `--after`, `--before`, `--limit` |
-| `auth set` / `auth status` | Store and check the token | |
-| `config set default-guild <name>` / `config get` | The default guild | |
-| `cache status` / `cache rebuild` / `cache clear` | The search index and lookup cache | |
-
-Global flags: `--json`, `--format` (see below), `--width` (compact truncation, default 200), `--no-header` (tsv), `--no-cache` (bypass the 24 hour guild, channel, and DM lists), `--timeout` (per request, default 30s), `--no-color`.
-
-## Output formats
-
-Every command accepts `--format`: `human` (the default), `json` (the same as `--json`), `compact`, and `tsv`. Use `compact` when the answer is a distribution across many lines (counting, grouping, scanning). Use `tsv` for the list commands.
-
-In `compact`, each line is `guild-slug/channel-slug:message-id:timestamp:author: content`, where content is one line with newlines escaped as `\n`, cut at `--width` (200 by default), and without attachments, embeds, or reactions.
-
 ```bash
-discord export search "access control" --guild my-guild --format=compact | cut -d: -f1 | sort | uniq -c
+discord auth status --json                  # exit 3: no or rejected token
+discord config get                          # default-guild; set it with: config set default-guild <name>
+discord guild list
+discord guild show --guild my-guild         # counts and export status per channel
+discord guild search budget --has link --limit 25
+discord guild export --threads              # incremental; --full refetches
+discord channel list --threads
+discord channel read general --limit 20
+discord channel export general
+discord dm list
+discord dm read someone --limit 10
+discord dm search someone --query meeting
+discord dm export someone
+discord message read 1542961568172740660 --context 5
+discord export list
+discord export search policy --all --author someone --after 2026-01-01
+discord cache rebuild                       # when stderr says the search index is stale
 ```
 
-## Quick reference
+`export search` needs `--guild` or `--all`; `--guild dm` searches DM exports. `dm search` refetches the whole DM each time, so export it once and use `export search --guild dm`. Names match case-insensitively with emoji and punctuation dropped; the numeric id always works.
 
-Read recent activity, oldest first. The JSON is a compact projection of Discord's message, not the raw object: each message has `id`, `timestamp`, `edited`, `author` (`id` and `name` only), `content`, `reply_to` (the id of the message it replies to, if any), `mentions`, `attachments`, `embeds`, and `reactions`, plus the resolved guild and channel. Empty arrays are left out. Twenty messages land well under 10 KB, where the raw objects would run past 50 KB:
+`message read` and `export search` say on stderr whether the answer came from an export on disk (and how stale it may be) or from Discord; `source` in their JSON says the same.
 
-```bash
-discord channel read general --json
-discord channel read news --limit 5 --json
-discord dm read someone --limit 10 --json
-```
+## Exit codes
 
-Read one message by its id, the id every search hit carries. The id is looked up in the search index first, so a message already in an export comes back from disk with no network call, whichever guild, channel, or DM it is in. `--context N` adds the N messages either side, oldest first, and the message asked for carries `"match": true` (in human output, a leading `>` on its timestamp line). Fewer come back at the start or end of a channel. When no export holds the id there is nothing to look up, so `--channel` says where to fetch it from, and without it the command exits 4:
-
-```bash
-discord message read <id from a search hit> --json
-discord message read <id from a search hit> --context 5 --json
-discord message read <id from a search hit> --channel general --json
-```
-
-Search live, newest first. Limits above 25 are paged automatically. `--has` takes image, video, sound, file, embed, link, sticker, or poll. The JSON has `total_results`, `messages`, and `channel_names`:
-
-```bash
-discord guild search "access control" --json
-discord guild search budget --channel general --limit 50 --json
-discord guild search --query "policy" --has link --json
-```
-
-Search exports on disk, unlimited and repeatable. One of `--guild` or `--all` is required; `--guild dm` selects DM exports. Any query term matches, case-insensitive substring. The JSON has `total_matches`, `shown`, and `results` with `guild`, `channel`, `id`, `author`, `timestamp`, `content`, `file`:
-
-```bash
-discord export search "access control" --guild my-guild --json
-discord export search policy --all --author someone --after 2026-01-01 --limit 100 --json
-discord export search budget --guild dm --json
-```
-
-A search index makes this return in well under a second. If stderr says the index is missing or out of date, the search still works by scanning; run `discord cache rebuild` afterwards.
-
-Discover:
-
-```bash
-discord guild list --json
-discord guild show --json
-discord channel list --threads --json
-discord dm list --json
-discord export list --json
-```
-
-Export. Runs are incremental; `--full` refetches; every export updates the search index. A guild export runs four channels at a time and exits 1 if any channel failed, keeping the others; rerun to retry:
-
-```bash
-discord guild export --json
-discord guild export --threads --json
-discord channel export general --json
-discord dm export someone --json
-```
-
-## Patterns
-
-Search, then read. A search returns an address, the `id` of every hit; the read expands one address into the conversation around it. Reach for this pair whenever a hit is worth more than its own line:
-
-```bash
-discord export search "onboarding" --guild my-guild --json
-discord message read <id from a search hit> --context 5 --json
-```
-
-Research a topic: live first for what Discord indexes today, then local for depth.
-
-```bash
-discord guild search "onboarding" --limit 50 --json
-discord export search "onboarding" --guild my-guild --limit 200 --json
-```
-
-If `export search` exits 5, run `discord guild export --json`, then search again.
-
-Research a DM: `dm search` fetches the whole history every time and warns on stderr when it is long. Export once, then search the export:
-
-```bash
-discord dm export someone --json
-discord export search "meeting" --guild dm --author someone --json
-```
-
-Refresh the archive before analysis:
-
-```bash
-discord guild export --json
-discord export search "assessment" --guild my-guild --after 2026-01-01 --json
-```
+0 success. 1 unexpected (read stderr; retry a timeout once). 2 usage (fix the command; "no guild" means add `--guild`). 3 auth: stop and ask the user to run `discord auth set`; never handle the token yourself. 4 not found: stderr lists suggestions; for a message in no export, add `--channel`. 5 no exports: run `discord guild export` first. 6 rate limited: wait a minute, do not loop.
 
 ## Data locations
 
-| Location | Contents |
-|---|---|
-| `~/.config/discord-cli/` | `token` (mode 0600) and `config.json` |
-| `~/.local/share/discord-cli/exports/<guild>/` | New exports; threads under `threads/<channel>/`; DMs under `dm/` |
-| `~/.cache/discord-cli/` | Search index and lookup cache; disposable |
-| `~/.discord-cli/exports/<guild>/` | Exports from the old Node CLI; read and updated in place |
-| `~/DiscordChatExporter.Cli.osx-arm64/exports/<guild>/` | DiscordChatExporter exports; read only |
-
-Exports use the DiscordChatExporter envelope (`guild`, `channel`, `dateRange`, `messages`, `messageCount`) with raw API messages; each directory has a `.meta.json` keyed by channel id.
-
-## Tips
-
-1. `channel read` for recent activity with full embeds; `guild search` to find by keyword live; `export search` for unlimited, repeatable research; `message read` to open up one hit.
-2. Emoji prefixes are optional in names; the id always works.
-3. Exit 3: stop and ask the user about the token. Exit 4: read the suggestions. Exit 5: export first. Exit 6: wait, do not loop.
-4. `--threads` on `channel list`, `channel read`, `channel export`, and `guild export` includes active and archived threads.
-5. Timestamps in JSON are RFC 3339 as Discord returned them.
-6. The old npm package `@poamslayer/discord-cli` is deprecated; its flat commands (`guilds`, `messages`, `search --local`) do not exist here.
-7. `message read` and `export search` say on stderr whether the answer came from an export on disk or from Discord, and how stale an export answer might be. `source` in their JSON (`export` or `discord`) is the machine-readable form of the same fact; `guild search`, `channel read`, and `dm read` need no such note because their name already says where they read from.
+`~/.config/discord-cli/` holds the token and config. Exports live in `~/.local/share/discord-cli/exports/<guild>/`, plus older ones read in place from `~/.discord-cli/exports/` and DiscordChatExporter exports (read only). `~/.cache/discord-cli/` is the disposable search index.
